@@ -15,8 +15,7 @@ router.post('/',authVerify, async (req,res)=>{
             const updatedCartList = await CartListSchema.updateOne(
                 {user_id:req.body.user_id},
                 {$set:{cart_lists:initArr}}
-            )
-            console.log("updatedCartList___________",updatedCartList)
+            )            
             const successMessage = {
                 status: "success",
                 data : initArr
