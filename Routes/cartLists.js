@@ -6,17 +6,23 @@ const authVerify = require('../Verification/tokenVerification')
 router.post('/',authVerify, async (req,res)=>{  
     
     const userHaveCartList = await CartListSchema.findOne({user_id:req.body.user_id})
-    console.log(userHaveCartList,"cart lists response from db")
-    if(userHaveCartList){
-        let initArr = userHaveCartList.cart_lists
-        let needPushArr = req.body.cart_lists
-        initArr.push(needPushArr)                    
+    
+    if(userHaveCartList){        
+        let initArr = userHaveCartList.cart_lists        
+        let cart_lists_obj = {}
+        cart_lists_obj.unique_id = Date.now()
+        cart_lists_obj.product_name = req.body.cart_lists.product_name
+        cart_lists_obj.size = req.body.cart_lists.size
+        cart_lists_obj.total_qty = req.body.cart_lists.total_qty        
+        cart_lists_obj.product_image = req.body.cart_lists.product_image
+        cart_lists_obj.indiv_price = req.body.cart_lists.indiv_price
+        initArr.push(cart_lists_obj)                               
+
         try{
-            const updatedCartList = await CartListSchema.updateOne(
+            await CartListSchema.updateOne(
                 {user_id:req.body.user_id},
                 {$set:{cart_lists:initArr}}
-            )
-            console.log("updatedCartList___________",updatedCartList)
+            )            
             const successMessage = {
                 status: "success",
                 data : initArr
@@ -28,9 +34,10 @@ router.post('/',authVerify, async (req,res)=>{
     }else{    
         const initArr = []            
         const addCartListObj = {}
+        addCartListObj.unique_id = Date.now()
         addCartListObj.product_name = req.body.cart_lists.product_name
         addCartListObj.size = req.body.cart_lists.size
-        addCartListObj.qty = req.body.cart_lists.qty        
+        addCartListObj.total_qty = req.body.cart_lists.total_qty        
         addCartListObj.product_image = req.body.cart_lists.product_image
         addCartListObj.indiv_price = req.body.cart_lists.indiv_price
         initArr.push(addCartListObj)                     
@@ -49,6 +56,43 @@ router.post('/',authVerify, async (req,res)=>{
             res.json({message:err})
         } 
     } 
+})
+
+router.get('/', authVerify, async(req,res)=>{    
+    try{
+        const cartLists = await CartListSchema.findOne({user_id:req.body.user_id})
+        res.json(cartLists)
+    }catch(err){
+        res.json({message:err})
+    }
+})
+
+router.delete('/',authVerify, async (req,res)=>{
+
+    const userHaveCartList = await CartListSchema.findOne({user_id:req.body.user_id})        
+    try{
+        if(userHaveCartList.cart_lists.length === 1){            
+            const deletedPost = await CartListSchema.deleteOne({user_id:req.body.user_id})                      
+            const successMessage = {
+                status: "success",
+                data : deletedPost
+            } 
+            res.json(successMessage) 
+        }else{
+            const filteredLists = userHaveCartList.cart_lists.filter(e=>e.unique_id !== Number(req.body.unique_id))          
+            await CartListSchema.updateOne(
+                {user_id:req.body.user_id},
+                {$set:{cart_lists:filteredLists}}
+            ) 
+            const successMessage = {
+                status: "success",
+                data : filteredLists
+            } 
+            res.json(successMessage)
+        }
+    }catch(err){
+        res.json({message:err})
+    }
 })
 
 module.exports = router

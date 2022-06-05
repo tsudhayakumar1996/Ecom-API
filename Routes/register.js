@@ -34,6 +34,7 @@ router.post('/',async (req,res) => {
         res.send({
             name : saveUser.name,
             phone_no:saveUser.phone_no,
+            user_id:saveUser._id,
             msg:"success"
         })
     }catch (err) {
