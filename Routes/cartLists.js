@@ -58,9 +58,9 @@ router.post('/',authVerify, async (req,res)=>{
     } 
 })
 
-router.get('/', authVerify, async(req,res)=>{    
+router.get('/:user_id', authVerify, async(req,res)=>{       
     try{
-        const cartLists = await CartListSchema.findOne({user_id:req.body.user_id})
+        const cartLists = await CartListSchema.findOne({user_id:req.params.user_id})
         res.json(cartLists)
     }catch(err){
         res.json({message:err})
