@@ -16,7 +16,7 @@ router.post('/',authVerify, async (req,res)=>{
         cart_lists_obj.total_qty = req.body.cart_lists.total_qty        
         cart_lists_obj.product_image = req.body.cart_lists.product_image
         cart_lists_obj.indiv_price = req.body.cart_lists.indiv_price
-        initArr.push(cart_lists_obj)                               
+        initArr.unshift(cart_lists_obj)                               
 
         try{
             await CartListSchema.updateOne(
@@ -40,7 +40,7 @@ router.post('/',authVerify, async (req,res)=>{
         addCartListObj.total_qty = req.body.cart_lists.total_qty        
         addCartListObj.product_image = req.body.cart_lists.product_image
         addCartListObj.indiv_price = req.body.cart_lists.indiv_price
-        initArr.push(addCartListObj)                     
+        initArr.unshift(addCartListObj)                     
         const cartList = new CartListSchema({
             user_id : req.body.user_id,             
             cart_lists : initArr,                     
