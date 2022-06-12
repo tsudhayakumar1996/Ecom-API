@@ -2,6 +2,7 @@ const bcrypt = require('bcryptjs')
 const express = require ('express')
 const router = express.Router()
 const UserSchema = require ('../Models/users')
+const CartListSchema = require ('../Models/cartLists')
 const loginValidation = require ('../Validation/loginValidation')
 const jwt = require('jsonwebtoken')
 require ("dotenv/config")
@@ -19,7 +20,9 @@ router.post('/',async (req,res) => {
     const err = {
         msg:"Entered phone no or password is wrong"
     }
-    const user = await UserSchema.findOne({phone_no:req.body.phone_no})
+    const user = await UserSchema.findOne({phone_no:req.body.phone_no})    
+    const userCartBatchIcon = await CartListSchema.findOne({user_id:user._id})  
+    const badge_count = userCartBatchIcon ? userCartBatchIcon.cart_lists.length : 0  
     if(!user) return res.status(400).send(err)
 
     //check for the password is correct
@@ -33,7 +36,8 @@ router.post('/',async (req,res) => {
         token:token,
         phone_no:user.phone_no,
         name:user.name,
-        user_id:user._id        
+        user_id:user._id,
+        badge_count: badge_count
     }
     res.header('auth-token',token).send(response)       
 })
