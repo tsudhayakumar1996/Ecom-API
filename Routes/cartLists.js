@@ -63,7 +63,11 @@ router.post('/',authVerify, async (req,res)=>{
 router.get('/:user_id', authVerify, async(req,res)=>{       
     try{
         const cartLists = await CartListSchema.findOne({user_id:req.params.user_id})
-        res.json(cartLists)
+        if(cartLists){
+            res.json(cartLists)
+        }else{
+            res.json({data:"no_data_found"})
+        }        
     }catch(err){
         res.json({message:err})
     }
@@ -77,7 +81,7 @@ router.delete('/:user_id/:unique_id',authVerify, async (req,res)=>{
             const deletedPost = await CartListSchema.deleteOne({user_id:req.params.user_id})                      
             const successMessage = {
                 status: "success", 
-                data:"no-data"               
+                data:deletedPost               
             } 
             res.json(successMessage) 
         }else{
