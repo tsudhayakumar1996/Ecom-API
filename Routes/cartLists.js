@@ -66,7 +66,7 @@ router.get('/:user_id', authVerify, async(req,res)=>{
         if(cartLists){
             res.json(cartLists)
         }else{
-            res.json({data:"no_data_found"})
+            res.json([])
         }        
     }catch(err){
         res.json({message:err})
