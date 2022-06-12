@@ -62,12 +62,11 @@ router.post('/',authVerify, async (req,res)=>{
 
 router.get('/:user_id', authVerify, async(req,res)=>{       
     try{
-        const cartLists = await CartListSchema.findOne({user_id:req.params.user_id})
-        console.log(cartLists)
+        const cartLists = await CartListSchema.findOne({user_id:req.params.user_id})        
         if(cartLists){
             res.json(cartLists)
         }else{
-            res.json({cart_lists:null})
+            res.json({cart_lists:[]})
         }        
     }catch(err){
         res.json({message:err})
@@ -84,7 +83,7 @@ router.delete('/:user_id/:unique_id',authVerify, async (req,res)=>{
             //     status: "success", 
             //     data:[{cart_lists:[]}]
             // } 
-            res.json({cart_lists:null}) 
+            res.json({cart_lists:[]}) 
         }else{
             const filteredLists = userHaveCartList.cart_lists.filter(e=>e.unique_id !== Number(req.params.unique_id))          
             await CartListSchema.updateOne(
