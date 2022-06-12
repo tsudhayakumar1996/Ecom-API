@@ -67,7 +67,7 @@ router.get('/:user_id', authVerify, async(req,res)=>{
         if(cartLists){
             res.json(cartLists)
         }else{
-            res.json({cart_lists:[]})
+            res.json({cart_lists:null})
         }        
     }catch(err){
         res.json({message:err})
@@ -84,7 +84,7 @@ router.delete('/:user_id/:unique_id',authVerify, async (req,res)=>{
             //     status: "success", 
             //     data:[{cart_lists:[]}]
             // } 
-            res.json({cart_lists:[]}) 
+            res.json({cart_lists:null}) 
         }else{
             const filteredLists = userHaveCartList.cart_lists.filter(e=>e.unique_id !== Number(req.params.unique_id))          
             await CartListSchema.updateOne(
