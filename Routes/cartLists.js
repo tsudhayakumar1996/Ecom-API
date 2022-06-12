@@ -11,6 +11,7 @@ router.post('/',authVerify, async (req,res)=>{
         let initArr = userHaveCartList.cart_lists        
         let cart_lists_obj = {}
         cart_lists_obj.unique_id = Date.now()
+        cart_lists_obj.product_id = req.body.product_id
         cart_lists_obj.product_name = req.body.cart_lists.product_name
         cart_lists_obj.size = req.body.cart_lists.size
         cart_lists_obj.total_qty = req.body.cart_lists.total_qty        
@@ -34,6 +35,7 @@ router.post('/',authVerify, async (req,res)=>{
     }else{    
         const initArr = []            
         const addCartListObj = {}
+        addCartListObj.product_id = req.body.product_id
         addCartListObj.unique_id = Date.now()
         addCartListObj.product_name = req.body.cart_lists.product_name
         addCartListObj.size = req.body.cart_lists.size
@@ -67,21 +69,21 @@ router.get('/:user_id', authVerify, async(req,res)=>{
     }
 })
 
-router.delete('/',authVerify, async (req,res)=>{
+router.delete('/:user_id/:unique_id',authVerify, async (req,res)=>{
 
-    const userHaveCartList = await CartListSchema.findOne({user_id:req.body.user_id})        
+    const userHaveCartList = await CartListSchema.findOne({user_id:req.params.user_id})        
     try{
         if(userHaveCartList.cart_lists.length === 1){            
-            const deletedPost = await CartListSchema.deleteOne({user_id:req.body.user_id})                      
+            const deletedPost = await CartListSchema.deleteOne({user_id:req.params.user_id})                      
             const successMessage = {
                 status: "success",
                 data : deletedPost
             } 
             res.json(successMessage) 
         }else{
-            const filteredLists = userHaveCartList.cart_lists.filter(e=>e.unique_id !== Number(req.body.unique_id))          
+            const filteredLists = userHaveCartList.cart_lists.filter(e=>e.unique_id !== Number(req.params.unique_id))          
             await CartListSchema.updateOne(
-                {user_id:req.body.user_id},
+                {user_id:req.params.user_id},
                 {$set:{cart_lists:filteredLists}}
             ) 
             const successMessage = {
