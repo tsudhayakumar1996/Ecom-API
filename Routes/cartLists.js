@@ -63,10 +63,11 @@ router.post('/',authVerify, async (req,res)=>{
 router.get('/:user_id', authVerify, async(req,res)=>{       
     try{
         const cartLists = await CartListSchema.findOne({user_id:req.params.user_id})
+        console.log(cartLists)
         if(cartLists){
             res.json(cartLists)
         }else{
-            res.json([])
+            res.json({cartLists:[]})
         }        
     }catch(err){
         res.json({message:err})
@@ -79,22 +80,22 @@ router.delete('/:user_id/:unique_id',authVerify, async (req,res)=>{
     try{
         if(userHaveCartList.cart_lists.length === 1){            
             const deletedPost = await CartListSchema.deleteOne({user_id:req.params.user_id})                      
-            const successMessage = {
-                status: "success", 
-                data:deletedPost               
-            } 
-            res.json(successMessage) 
+            // const successMessage = {
+            //     status: "success", 
+            //     data:[{cart_lists:[]}]
+            // } 
+            res.json({cartLists:[]}) 
         }else{
             const filteredLists = userHaveCartList.cart_lists.filter(e=>e.unique_id !== Number(req.params.unique_id))          
             await CartListSchema.updateOne(
                 {user_id:req.params.user_id},
                 {$set:{cart_lists:filteredLists}}
             ) 
-            const successMessage = {
-                status: "success",
-                data : filteredLists
-            } 
-            res.json(successMessage)
+            // const successMessage = {
+            //     status: "success",
+            //     data : filteredLists
+            // } 
+            res.json(filteredLists)
         }
     }catch(err){
         res.json({message:err})
