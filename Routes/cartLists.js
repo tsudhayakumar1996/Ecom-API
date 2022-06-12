@@ -76,8 +76,8 @@ router.delete('/:user_id/:unique_id',authVerify, async (req,res)=>{
         if(userHaveCartList.cart_lists.length === 1){            
             const deletedPost = await CartListSchema.deleteOne({user_id:req.params.user_id})                      
             const successMessage = {
-                status: "success",
-                data : deletedPost
+                status: "success", 
+                data:"no-data"               
             } 
             res.json(successMessage) 
         }else{
