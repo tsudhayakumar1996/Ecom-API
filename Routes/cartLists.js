@@ -81,7 +81,7 @@ router.delete('/:user_id/:unique_id',authVerify, async (req,res)=>{
     try{
         if(userHaveCartList.cart_lists.length === 1){            
             const deletedPost = await CartListSchema.deleteOne({user_id:req.params.user_id})                                 
-            res.json({cart_lists:[]}) 
+            res.json([]) 
         }else{
             const filteredLists = userHaveCartList.cart_lists.filter(e=>e.unique_id !== Number(req.params.unique_id))          
             await CartListSchema.updateOne(
