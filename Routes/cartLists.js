@@ -95,4 +95,30 @@ router.delete('/:user_id/:unique_id',authVerify, async (req,res)=>{
     }
 })
 
+router.patch('/:user_id/:unique_id',authVerify,async(req,res)=>{
+    const newCartListToUpdate = {}
+    newCartListToUpdate.product_id = req.body.product_id
+    newCartListToUpdate.unique_id = req.body.unique_id
+    newCartListToUpdate.product_name = req.body.product_name
+    newCartListToUpdate.size = req.body.size
+    newCartListToUpdate.total_qty = req.body.total_qty
+    newCartListToUpdate.product_image = req.body.product_image
+    newCartListToUpdate.indiv_price = req.body.indiv_price
+    newCartListToUpdate.act_size = req.body.act_size
+    const userHaveCartList = await CartListSchema.findOne({user_id:req.params.user_id})  
+    const copyOfCartLists = userHaveCartList.cart_lists   
+    let index = 0
+    userHaveCartList.cart_lists.map((each,i)=>{
+        if(each.unique_id === Number(req.params.unique_id)){            
+            index = i
+        }
+    })
+    copyOfCartLists[index] = newCartListToUpdate
+    const updatedCartList = await CartListSchema.updateOne(
+        {user_id:req.params.user_id},
+        {$set:{cart_lists:copyOfCartLists}}
+    )
+    res.json({status:"success"})
+})
+
 module.exports = router
