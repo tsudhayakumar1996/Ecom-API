@@ -20,9 +20,12 @@ router.post('/',async (req,res) => {
     const err = {
         msg:"Entered phone no or password is wrong"
     }
-    const user = await UserSchema.findOne({phone_no:req.body.phone_no})    
-    const userCartBatchIcon = await CartListSchema.findOne({user_id:user._id})  
-    const badge_count = userCartBatchIcon ? userCartBatchIcon.cart_lists.length : 0  
+    const user = await UserSchema.findOne({phone_no:req.body.phone_no})
+    let badge_count  
+    if(user){  
+        const userCartBatchIcon = await CartListSchema.findOne({user_id:user._id})  
+        badge_count = userCartBatchIcon ? userCartBatchIcon.cart_lists.length : 0          
+    }
     if(!user) return res.status(400).send(err)
 
     //check for the password is correct
