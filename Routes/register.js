@@ -72,7 +72,11 @@ router.post('/',async (req,res) => {
 
 router.patch("/:user_id",authVerify,upload.single("userImage"),async (req,res)=>{
     const findUser = await UserSchema.findOne({_id:req.params.user_id})
-    console.log(findUser)
+    await UserSchema.updateOne(
+        {_id:req.params.user_id},
+        {$set:{user_image:req.file.path}}
+    )    
+    res.status(400).send({status:"success"})
 })
 
 module.exports = router
