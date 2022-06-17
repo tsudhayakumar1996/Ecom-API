@@ -40,7 +40,8 @@ router.post('/',async (req,res) => {
         phone_no:user.phone_no,
         name:user.name,
         user_id:user._id,
-        badge_count: badge_count
+        badge_count: badge_count,
+        user_image:user.user_image
     }
     res.header('auth-token',token).send(response)       
 })
