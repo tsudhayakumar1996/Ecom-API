@@ -70,9 +70,9 @@ router.post('/',async (req,res) => {
     }
 })
 
-router.patch("/:user_id",authVerify,upload.single("userImage"),async (req,res)=>{
-    console.log("hitted---------")
+router.patch("/:user_id",authVerify,upload.single("userImage"),async (req,res)=>{    
     const findUser = await UserSchema.findOne({_id:req.params.user_id})
+    console.log(findUser,req.file.path,"heroku check............")
     try{
         await UserSchema.updateOne(
             {_id:req.params.user_id},
@@ -80,7 +80,7 @@ router.patch("/:user_id",authVerify,upload.single("userImage"),async (req,res)=>
         )    
         res.status(400).send({status:"success"})
     }catch(err){
-        res.status(400).send(err)
+        res.json({message:err})
     }
 })
 
