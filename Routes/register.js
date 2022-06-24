@@ -72,7 +72,7 @@ router.post('/',async (req,res) => {
 
 router.patch("/:user_id",authVerify,upload.single("userImage"),async (req,res)=>{    
     const findUser = await UserSchema.findOne({_id:req.params.user_id})
-    console.log(findUser,req.file,"heroku check............")
+    console.log(findUser,req,"heroku check............")
     try{
         await UserSchema.updateOne(
             {_id:req.params.user_id},
