@@ -4,32 +4,14 @@ const UserSchema = require ('../Models/users')
 const registerValidation = require('../Validation/registerValidation') 
 const bcrypt = require('bcryptjs')
 const authVerify = require('../Verification/tokenVerification')
-const multer = require('multer')
+const fs = require('fs')
+const path = require('path')
+const app = express()
+const bodyParser = require('body-parser');
 
-//setting storage
-const storage = multer.diskStorage({
-    destination: function(req,file,cb){
-        cb(null,'./uploads')
-    },
-    filename: function(req,file,cb){
-        cb(null,file.originalname)
-    }
-})
-//make condition for file type to upload
-const fileFilter = (req,file,cb) => {
-    if(file.mimetype === 'image/jpeg' || file.mimetype === 'image/png') {
-        cb(null,true);
-    } else{
-        cb(null,false);
-    }       
-}
-//make file size limit to 5MB
-const upload = multer({storage,
-    fileFilter,
-    limits:{
-        fileSize: 1024*1024*5
-    },    
-})
+app.use(bodyParser.urlencoded({extended:true}))
+app.use(bodyParser.json({limit:'5MB'}))
+
 
 router.post('/',async (req,res) => {
     //validating the datas
@@ -70,18 +52,24 @@ router.post('/',async (req,res) => {
     }
 })
 
-router.patch("/:user_id",authVerify,upload.single("userImage"),async (req,res)=>{    
-    const findUser = await UserSchema.findOne({_id:req.params.user_id})
-    console.log(findUser,req.file.path,"heroku check............")
-    try{
-        await UserSchema.updateOne(
-            {_id:req.params.user_id},
-            {$set:{user_image:req.file.path}}
-        )    
-        res.send({status:"success"})
-    }catch(err){
-        res.json({message:err})
-    }
+router.patch("/:user_id",authVerify,async (req,res)=>{
+        
+    console.log(req.body,"heroku check............")
+    fs.writeFile("image.jpeg",req.body.image,'base64',(err)=>{
+        if(err) throw err
+        else if (!err) res.send("ok")
+    })    
+    // const findUser = await UserSchema.findOne({_id:req.params.user_id})    
+    // try{
+    //     await UserSchema.updateOne(
+    //         {_id:req.params.user_id},
+    //         {$set:{user_image:"uploads/"+req.body.image}}
+    //     )    
+    //     res.send({status:"success"})
+    // }catch(err){
+    //     res.json({message:err})
+    // }
+    
 })
 
 module.exports = router

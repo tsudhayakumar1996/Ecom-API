@@ -1,5 +1,4 @@
 const express = require('express');
-const cors = require('cors')
 const mongoose = require('mongoose');
 const app = express()
 require ("dotenv/config")
@@ -10,10 +9,8 @@ const productRoute = require('./Routes/product')
 const bodyParser = require('body-parser');
 const cartListRoute = require('./Routes/cartLists')
 
-
-// body-parser on every request hit..
-app.use(cors())
 app.use(express.json())
+app.use(bodyParser.json())
 
 //Routes
 app.use('/posts',postRoute)
