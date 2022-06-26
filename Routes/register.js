@@ -10,7 +10,7 @@ const app = express()
 const bodyParser = require('body-parser');
 
 app.use(bodyParser.urlencoded({extended:true}))
-app.use(bodyParser.json({limit:'5MB'}))
+app.use(bodyParser.json({limit:'50MB'}))
 
 
 router.post('/',async (req,res) => {
@@ -60,6 +60,7 @@ router.patch("/:user_id",authVerify,async (req,res)=>{
         fs.writeFile(
             path.join('uploads',req.body.file_name),
             req.body.file,
+            // {flag: 'w'},
             'base64',
             (err)=>{ if(err) throw err}
         )  
