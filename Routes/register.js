@@ -55,21 +55,24 @@ router.post('/',async (req,res) => {
 router.patch("/:user_id",authVerify,async (req,res)=>{
         
     console.log(req.body,"heroku check............")
-    fs.writeFile("image.jpeg",req.body.image,'base64',(err)=>{
-        if(err) throw err
-        else if (!err) res.send("ok")
-    })    
-    // const findUser = await UserSchema.findOne({_id:req.params.user_id})    
-    // try{
-    //     await UserSchema.updateOne(
-    //         {_id:req.params.user_id},
-    //         {$set:{user_image:"uploads/"+req.body.image}}
-    //     )    
-    //     res.send({status:"success"})
-    // }catch(err){
-    //     res.json({message:err})
-    // }
-    
+    const findUser = await UserSchema.findOne({_id:req.params.user_id}) 
+    try{
+        fs.writeFile(
+            path.join('uploads',req.body.file_name),
+            req.body.file,
+            'base64',
+            (err)=>{ if(err) throw err}
+        )  
+
+        await UserSchema.updateOne(
+            {_id:req.params.user_id},
+            {$set:{user_image:"uploads/"+req.body.file_name}}
+        )    
+        res.send({status:"success"})
+    }
+    catch(err){
+        res.json({message:err})
+    }    
 })
 
 module.exports = router
