@@ -59,8 +59,7 @@ router.patch("/:user_id",authVerify,async (req,res)=>{
     try{
         fs.writeFile(
             path.join('uploads',req.body.file_name),
-            req.body.file,
-            // {flag: 'w'},
+            req.body.file,            
             'base64',
             (err)=>{ if(err) throw err}
         )  
