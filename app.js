@@ -9,8 +9,7 @@ const productRoute = require('./Routes/product')
 const bodyParser = require('body-parser');
 const cartListRoute = require('./Routes/cartLists')
 
-app.use(express.json())
-app.use(express.limit(5000000))
+app.use(express.json({limit: '10mb'}))
 app.use(bodyParser.json())
 
 //Routes
