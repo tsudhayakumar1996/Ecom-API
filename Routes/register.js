@@ -10,7 +10,7 @@ const app = express()
 const bodyParser = require('body-parser');
 
 app.use(bodyParser.urlencoded({extended:true}))
-app.use(bodyParser.json({limit:'50MB'}))
+app.use(bodyParser.json())
 
 
 router.post('/',async (req,res) => {
