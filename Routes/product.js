@@ -50,7 +50,7 @@ router.post('/', authVerify,upload.single('productImage'),async(req,res)=>{
 })
 
 //get all product details...
-router.get('/',authVerify,async(req,res)=>{
+router.get('/',async(req,res)=>{
     try{
         const productList = await ProductSchema.find()
         res.json(productList)
@@ -60,7 +60,7 @@ router.get('/',authVerify,async(req,res)=>{
 })
 
 //get product by id...
-router.get('/:id',authVerify,async(req,res)=>{
+router.get('/:id',async(req,res)=>{
     try{
         const particularProduct = await ProductSchema.findOne({_id:req.params.id})
         res.json(particularProduct)
