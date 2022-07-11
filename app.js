@@ -8,7 +8,9 @@ const loginRoute = require('./Routes/login')
 const productRoute = require('./Routes/product')
 const bodyParser = require('body-parser');
 const cartListRoute = require('./Routes/cartLists')
+const cors = require('cors')
 
+app.use(cors())
 app.use(express.json({limit: '10mb'}))
 app.use(bodyParser.json())
 
